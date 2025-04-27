@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Product Page</title>
+{% endblock title %}
+{% block content %}
+
+    <!-- Breadcrumbs -->
+    {% include 'includes/breadcrumbs.html' with chosen=chosen %}
+
+    <!-- Product info -->
+    {% include 'includes/product-info.html' with chosen=chosen %}
+
+    <!-- Product tabs description -->
+    {% include 'includes/product-tabs.html' with product=product reviews=reviews reviews_count=reviews_count %}
+
+    <!-- latest products was here -->
+
+{% endblock content %}

@@ -1,0 +1,211 @@
+{% load static %}
+<section id="shop">
+    <div class="container mx-auto">
+        <!-- Top Filter -->
+        <div class="flex flex-col md:flex-row justify-between items-center py-4">
+            <div class="flex items-center space-x-4">
+                <a
+                    href = "{% url 'shop' %}"
+                    class="bg-primary text-white hover:bg-transparent hover:text-primary border hover:border-primary py-2 px-4 rounded-full focus:outline-none">Show
+                    On
+                    Sale</a>
+                
+            </div>
+            <div class="flex mt-5 md:mt-0 space-x-4">
+                <form action="{% url 'shop' %}?sorting='on_sale'" method="GET">
+                    <div class="relative">
+                        <select id="sort-select" name="sorting"
+                            class="block appearance-none w-full bg-white border hover:border-primary px-4 py-2 pr-8 rounded-full shadow leading-tight focus:outline-none focus:shadow-outline"
+                            onchange="this.form.submit()">
+                            <option value="latest" {% if request.GET.sorting == "latest" %}selected{% endif %}>
+                                Sort by Latest
+                            </option>
+                            <option value="popular" {% if request.GET.sorting == "popular" %}selected{% endif %}>
+                                Sort by Popularity
+                            </option>
+                            <option value="alpha" {% if request.GET.sorting == "alpha" %}selected{% endif %}>
+                                Sort by A-Z
+                            </option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Filter Toggle Button for Mobile -->
+        <div class="block md:hidden text-center mb-4">
+            <button id="products-toggle-filters"
+                class="bg-primary text-white py-2 px-4 rounded-full focus:outline-none">Show Filters</button>
+        </div>
+        <div class="flex flex-col md:flex-row">
+            <!-- Filters -->
+            <div id="filters" class="w-full md:w-1/4 p-4 hidden md:block">
+                <!-- Category Filter -->
+                <div class="mb-6 pb-8 border-b border-gray-line">
+                    <h3 class="text-lg font-semibold mb-6">Category</h3>
+                    <div class="space-y-2">
+                        <form method="GET" id="filterForm">
+                            {% for category in categories %}
+                            
+                                <a class="flex items-center" href="{% url 'shop' %}?category={{category.slug}}">
+                                        
+                                    <span class="ml-2">{{ category.name }}</span>
+                                </a>
+                            {% endfor %}
+                        </form>
+                    </div>
+                </div>
+                <!-- Size Filter -->
+                <div class="mb-6 pb-8 border-b border-gray-line">
+                    <h3 class="text-lg font-semibold mb-6">Size</h3>
+                    <div class="space-y-2">
+                        {% for size in sizes %}
+                                
+                            
+                        <a class="flex items-center" href="{% url 'shop' %}?size={{size.name}}">
+                                        
+                            <span class="ml-2">{{ size.name }}</span>
+                        </a>
+                        
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Color Filter -->
+                <div class="mb-6 pb-8 border-b border-gray-line">
+                    <h3 class="text-lg font-semibold mb-6">Color</h3>
+                    <div class="space-y-2">
+                        {% for color in colors %}
+                        <a 
+                            href="{% url 'shop' %}?color={{  color|urlencode }}" 
+                            class="block w-6 h-6 rounded-full border border-gray-300 hover:border-gray-500 transition-all"
+                            style="background-color: {{ color }};"
+                            title="{{ color }}"
+                        ></a>
+                       {% endfor %}
+                    </div>
+                </div>
+                <!-- Brand Filter -->
+                <div class="mb-6 pb-8 border-b border-gray-line">
+                    <h3 class="text-lg font-semibold mb-6">Brand</h3>
+                    <div class="space-y-2">
+                        {% for brand in brands  %}
+                                
+                         
+                                
+                        <a class="flex items-center"
+                            href="{% url 'shop' %}?brand={{brand.name}}">
+
+                            <span class="ml-2">{{brand.name}}</span>
+                        </a>
+
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Rating Filter -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-6">Rating</h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="form-checkbox custom-checkbox">
+                            <span class="ml-2">★★★★★</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="form-checkbox custom-checkbox">
+                            <span class="ml-2">★★★★☆</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="form-checkbox custom-checkbox">
+                            <span class="ml-2">★★★☆☆</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <!-- Products List -->
+            <div class="w-full md:w-3/4 p-4">
+                <!-- Products grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    
+                    {% if products %}
+             
+                    
+                    <!-- Products -->
+                    {% for product in products  %}
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <img src="{{product.base_image.url}}" alt="Product 1"
+                            class="w-full object-cover mb-4 rounded-lg">
+                        <a href="{% url 'product-detail' product.slug %}" class="text-lg font-semibold mb-2">{{product.name}}</a>
+                        <p class=" my-2">{{product.category}}</p>
+                        <div class="flex items-center mb-4">
+                            {% if product.featured.has_discount %}
+                    
+                  
+                    
+                            <span class="text-lg font-bold text-primary">${{product.featured.price_after}}</span>
+                            <span class="text-sm line-through ml-2">${{product.featured.price_without}}</span>
+                            {% else %}
+                            <span class="text-lg font-bold text-primary">${{product.featured.price_without}}</span>
+                            {% endif %}
+                            
+                        </div>
+                        <a href="{% url 'product-detail' product.slug %}"
+                            class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">Add
+                            to Cart</a>
+                    </div>
+                   
+                    {% endfor %}
+                    {% else %}
+                        <p>no products</p>       
+                    {% endif %}
+                        
+                </div>
+                <!-- Pagination -->
+                <div class="flex justify-center mt-8">
+                    <nav aria-label="Page navigation">
+                        <ul class="inline-flex space-x-2">
+                
+                            <!-- First & Previous -->
+                            {% if page.has_previous %}
+                            <li>
+                                <a href="?page=1{% if query %}&query={{ query }}{% endif %}{% if size %}&size={{ size }}{% endif %}{% if sorting %}&sorting={{ sorting }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}{% if category %}&category={{ category }}{% endif %}"
+                                    class="bg-primary text-white w-10 h-10 flex items-center justify-center rounded-full">First</a>
+                            </li>
+                            <li>
+                                <a href="?page={{ page.previous_page_number }}{% if query %}&query={{ query }}{% endif %}{% if size %}&size={{ size }}{% endif %}{% if sorting %}&sorting={{ sorting }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}{% if category %}&category={{ category }}{% endif %}"
+                                    class="bg-primary text-white w-10 h-10 flex items-center justify-center rounded-full">←</a>
+                            </li>
+                            {% endif %}
+                
+                            <!-- Page Numbers with Range Control -->
+                            {% for num in page.paginator.page_range %}
+                                {% if num == page.number %}
+                                <li>
+                                    <span class="bg-gray-400 text-white w-10 h-10 flex items-center justify-center rounded-full">{{ num }}</span>
+                                </li>
+                                {% elif num == 1 or num == page.paginator.num_pages or num >= page.number|add:-1 and num <= page.number|add:1 %}
+                                <li>
+                                    <a href="?page={{ num }}{% if query %}&query={{ query }}{% endif %}{% if size %}&size={{ size }}{% endif %}{% if sorting %}&sorting={{ sorting }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}{% if category %}&category={{ category }}{% endif %}"
+                                        class="bg-primary text-white w-10 h-10 flex items-center justify-center rounded-full">{{ num }}</a>
+                                </li>
+                                {% elif num == page.number|add:-2 or num == page.number|add:2 %}
+                                <li><span class="text-gray-500">...</span></li>
+                                {% endif %}
+                            {% endfor %}
+                
+                            <!-- Next & Last -->
+                            {% if page.has_next %}
+                            <li>
+                                <a href="?page={{ page.next_page_number }}{% if query %}&query={{ query }}{% endif %}{% if size %}&size={{ size }}{% endif %}{% if sorting %}&sorting={{ sorting }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}{% if category %}&category={{ category }}{% endif %}"
+                                    class="bg-primary text-white w-10 h-10 flex items-center justify-center rounded-full">→</a>
+                            </li>
+                            <li>
+                                <a href="?page={{ page.paginator.num_pages }}{% if query %}&query={{ query }}{% endif %}{% if size %}&size={{ size }}{% endif %}{% if sorting %}&sorting={{ sorting }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}{% if category %}&category={{ category }}{% endif %}"
+                                    class="bg-primary text-white w-10 h-10 flex items-center justify-center rounded-full">Last</a>
+                            </li>
+                            {% endif %}
+                
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

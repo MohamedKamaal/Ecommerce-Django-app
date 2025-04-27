@@ -1,0 +1,11 @@
+order no {{order_id}}
+You order has been paid successfully and it is on your way
+The order is composed of following:
+{% for item in cart %}
+    Name:{{item.name}}    
+    Price:{{item.price}}    
+    Quantity:{{item.quantity}}    
+{% endfor %}
+    
+please proceed to pay to confirm your order,
+    your order!

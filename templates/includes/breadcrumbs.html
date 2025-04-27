@@ -1,0 +1,13 @@
+<section id="breadcrumbs" class="pt-6 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <ol class="list-reset flex">
+            <li><a href="{% url 'home' %}" class="font-semibold hover:text-primary">Home</a></li>
+            <li><span class="mx-2">&gt;</span></li>
+            <li><a href="{% url 'shop' %}" class="font-semibold hover:text-primary">Shop</a></li>
+            <li><span class="mx-2">&gt;</span></li>
+            <li><a href="" class="font-semibold hover:text-primary">{{chosen.product.name}}</a></li>
+            <li><span class="mx-2">&gt;</span></li>
+          
+        </ol>
+    </div>
+</section>

@@ -1,0 +1,10 @@
+order no {{order.id}}
+You order is composed of following:
+{% for item in {{order.items}} %}
+    Name:{{item.name}}    
+    Price:{{item.price}}    
+    Quantity:{{item.quantity}}    
+{% endfor %}
+    
+please proceed to pay to confirm your order,
+    your order!

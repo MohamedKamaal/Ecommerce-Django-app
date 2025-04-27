@@ -1,0 +1,39 @@
+{% load static %}
+
+<section id="popular-products">
+    <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold mb-8">Popular products</h2>
+        <div class="flex flex-wrap -mx-4">
+            <!-- Product -->
+             
+            {% for product in products  %}
+            
+            
+            <!-- Product -->
+            <div class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+              <div class="bg-white p-3 rounded-lg shadow-lg">
+                <img src="{{product.base_image.url}}" alt="Product 1" class="w-full object-cover mb-4 rounded-lg">
+                <a href="{% url 'product-detail' product.slug %}" class="text-lg font-semibold mb-2">{{product.name}}</a>
+                <p class=" my-2">{{product.category}}</p>
+                <div class="flex items-center mb-4">
+                  
+                  {% if product.featured.has_discount %}
+                    
+                  
+                    
+                  <span class="text-lg font-bold text-primary">${{product.featured.price_after}}</span>
+                  <span class="text-sm line-through ml-2">${{product.featured.price_without}}</span>
+                  {% else %}
+                  <span class="text-lg font-bold text-primary">${{product.featured.price_without}}</span>
+                  {% endif %}
+                </div>
+                <a href="{% url 'product-detail' product.slug %}" class="bg-primary border border-transparent hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full w-full">Add to Cart</a>
+              </div>
+            </div>
+            
+
+          {% endfor %}
+            
+          </div>
+    </div>
+</section>

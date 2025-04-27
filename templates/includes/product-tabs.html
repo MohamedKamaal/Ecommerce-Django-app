@@ -1,0 +1,240 @@
+<section>
+    <div class="container mx-auto">
+        <div class="py-12">
+            <div class="mt-10">
+                <div class="flex space-x-4" role="tablist">
+                    <button id="description-tab" role="tab" aria-controls="description-content" aria-selected="true"
+                        class="tab active">Description</button>
+                    <button id="additional-info-tab" role="tab" aria-controls="additional-info-content"
+                        aria-selected="false" class="tab">Additional information</button>
+                    <button id="size-shape-tab" role="tab" aria-controls="size-shape-content" aria-selected="false"
+                        class="tab">Size & Shape</button>
+                    <button id="reviews-tab" role="tab" aria-controls="reviews-content" aria-selected="false"
+                        class="tab">Reviews ({{reviews_count}})</button>
+                </div>
+                <div class="mt-8">
+                    <div id="description-content" role="tabpanel" aria-labelledby="description-tab"
+                        class="tab-content">
+                        <div class="flex flex-col lg:flex-row lg:space-x-8">
+                            <div class="w-full lg:w-1/2">
+                                <h3 class="text-xl font-semibold mb-2">With the new fashion trends and all the
+                                    available shopping options, you can order your clothes online and make money
+                                    without even leaving your house.</h3>
+                                <p class="mb-4">These days, you can take your own inspiration and create something
+                                    new for yourself. All you need to do is read books and magazines about fashion,
+                                    watch videos on YouTube, keep yourself updated on social media, and, of course,
+                                    shop online!</p>
+                            </div>
+                            <div class="w-full lg:w-1/4">
+                                <h3 class="text-xl font-semibold mb-5">Material & Washing</h3>
+                                <p class="mb-2 pb-2 border-b border-gray-line">Material: <span
+                                        class="font-semibold">100% cotton</span></p>
+                                <p class="mb-2 pb-2 border-b border-gray-line">Fabric: <span
+                                        class="font-semibold">Soft jersey</span></p>
+                                <p class="mb-2">Care instructions: <span class="font-semibold">Machine wash at 30°C,
+                                        do not tumble dry, iron on low heat, do not bleach</span></p>
+                            </div>
+                            <div class="w-full lg:w-1/4">
+                                <h3 class="text-xl font-semibold mb-5">Size & Shape</h3>
+                                <p class="mb-2 pb-2 border-b border-gray-line">Model height: <span
+                                        class="font-semibold">Our model is 180 cm tall and is wearing size M</span>
+                                </p>
+                                <p class="mb-2 pb-2 border-b border-gray-line">Fit: <span
+                                        class="font-semibold">Regular</span></p>
+                                <p class="mb-2 pb-2 border-b border-gray-line">Length: <span
+                                        class="font-semibold">Standard</span></p>
+                                <p class="mb-2">Sleeve length: <span class="font-semibold">Short sleeves</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="additional-info-content" role="tabpanel" aria-labelledby="additional-info-tab"
+                        class="tab-content hidden">
+                        <p>Additional information about the product.</p>
+                        <div class="flex flex-col space-y-8">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2">Colors</h3>
+                                <p class="text-base text-gray-700">
+                                    Available colors:
+                                    <a href="#" class="text-primary hover:underline">Red</a>,
+                                    <a href="#" class="text-primary hover:underline">Blue</a>,
+                                    <a href="#" class="text-primary hover:underline">Green</a>,
+                                    <a href="#" class="text-primary hover:underline">Black</a>,
+                                    <a href="#" class="text-primary hover:underline">White</a>.
+                                </p>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2">Brand</h3>
+                                <p class="text-base text-gray-700">
+                                    This t-shirt is made by
+                                    <a href="#" class="text-primary hover:underline">Nike</a>.
+                                </p>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2">Material & Care</h3>
+                                <p class="text-base text-gray-700">
+                                    Material: 100% Cotton
+                                    <br>
+                                    Care instructions: Machine wash at 40 °C, do not tumble dry, iron at medium
+                                    temperature, do not bleach.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="size-shape-content" role="tabpanel" aria-labelledby="size-shape-tab"
+                        class="tab-content hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 border-b border-gray-line bg-gray-100 text-left text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
+                                            Size
+                                        </th>
+                                        <th
+                                            class="px-6 py-3 border-b border-gray-line bg-gray-100 text-left text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
+                                            Chest (inches)
+                                        </th>
+                                        <th
+                                            class="px-6 py-3 border-b border-gray-line bg-gray-100 text-left text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
+                                            Waist (inches)
+                                        </th>
+                                        <th
+                                            class="px-6 py-3 border-b border-gray-line bg-gray-100 text-left text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
+                                            Sleeve Length (inches)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            Small
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            34-36
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            28-30
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            32-33
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            Medium
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            38-40
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            32-34
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            33-34
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            Large
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            42-44
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            36-38
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            34-35
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            X-Large
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            46-48
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            40-42
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-no-wrap border-b border-gray-line text-sm leading-5 text-gray-700">
+                                            35-36
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div id="reviews-content" role="tabpanel" aria-labelledby="reviews-tab"
+                        class="tab-content hidden">
+                        <!-- Reviews List -->
+                        <div class="space-y-6">
+                            <h3 class="text-lg font-semibold mb-4">Customer Reviews</h3>
+                            <div id="reviews-list">
+                                <!-- Review 1 -->
+                                 
+                                 {% for review in reviews  %}
+                                    
+                                    
+                                <div class="py-4">
+                                    <div class="flex items-center mb-2">
+                                        
+                                        <span class="text-lg font-semibold text-gray-700">{{review.username}}</span>
+                                        <span class="ml-2 text-primary">{{ review.get_rating_display }}</span>
+                                    </div>
+                                    <p>{{review.review}}</p>
+                                </div>
+
+                                {% endfor %}
+
+                            </div>
+                        </div>
+
+                        <!-- Submit Review Form -->
+                        <div class="mt-8">
+                            <h3 id="write_review" class="text-lg font-semibold mb-4">Write a Review</h3>
+                            <form method="POST" action = "{% url 'product-review' product.slug %}" id="review-form" class="space-y-4">
+                                {% csrf_token %}
+                                
+                                {% if request.user.is_authenticated %}
+                                {{review_form.review}}
+                                {{review_form.rating}}
+
+                                {% else %}  
+                                {{review_form.name}}
+                                {{review_form.email}}
+                                {{review_form.review}}
+                                {{review_form.rating}}
+                                
+                                {% endif %}
+                                <button type="submit"
+                                class="bg-primary hover:bg-transparent border border-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full focus:outline-none">Submit
+                                Review</button>
+                            </div>
+                        </form>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

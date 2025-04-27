@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Home Page</title>
+{% endblock title %}
+{% block content %}
+
+ <!-- Slider -->
+ {% include 'includes/product-slider.html' with categories=top_categories %}
+
+ <!-- Product banner section -->
+ {% include 'includes/product-banner.html' with categories=top_categories %}
+
+ <!-- Popular product section -->
+ {% include 'includes/popular-products.html' with products=popular_products %}
+
+ <!-- Latest product section -->
+ {% include 'includes/latest-products.html' with products=latest_products %}
+
+ <!-- Banner section -->
+ {% include 'includes/banner.html' %}
+
+ <!-- Blog section -->
+ {% include 'includes/blog.html' %}
+
+
+  
+{% endblock content %}

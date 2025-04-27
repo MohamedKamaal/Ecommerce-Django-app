@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Shop Page</title>
+{% endblock title %}
+{% block content %}
+    
+    
+
+    <!-- Shop -->
+    {% include 'includes/shop.html' with products=page categories=categories sizes=sizes colors=colors brands=brands %}
+
+    <!-- Shop category description -->
+    {% include 'includes/shop-category.html' %}
+
+
+    {% endblock content %}
