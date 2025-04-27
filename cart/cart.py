@@ -1,5 +1,7 @@
 from store.models import ProductVariation
 import decimal
+from django.shortcuts import get_object_or_404
+from django.core.exceptions import ValidationError
 
 class Cart:
     """
@@ -48,30 +50,31 @@ class Cart:
         self.save()  # Ensure session modification
 
     def add(self, id, quantity=1, update_quantity=False):
-        """
-        Adds a ProductVariation to the cart.
-
-        If the product variation is not already in the cart, it is added.
-        If it is already present, the quantity is updated (if `update_quantity` is True).
-
-        Args:
-            id (int): The ID of the product variation to be added.
-            quantity (int, optional): The quantity of the product variation to be added. Defaults to 1.
-            update_quantity (bool, optional): Whether to update the quantity if the item is already in the cart. Defaults to False.
-        """
         id = str(id)
+        variation = get_object_or_404(ProductVariation, id=int(id))
+        
+        # Validate stock
+        current_quantity = self.cart.get(id, {'quantity': 1})['quantity']
+        new_quantity = quantity if update_quantity else current_quantity + quantity
+        if new_quantity > variation.stock:
+            raise ValidationError("This exceeds our stock")
+        
         if id not in self.cart:
-            variation = ProductVariation.objects.get(id=int(id))
             self.cart[id] = {
                 'id': int(id),
-                'price_cents': int(variation.price),
-                'quantity': int(quantity)
+                'price_cents': int(variation.price_cents),
+                'quantity': 1
             }
+        
         if update_quantity:
+            self.cart[id]['quantity'] = int(quantity)
+        else:
             self.cart[id]['quantity'] += int(quantity)
-
-            if self.cart[id]['quantity'] == 0:
-                self.remove(id=id)
+        
+        # Remove item if quantity becomes 0
+        if self.cart[id]['quantity'] <= 0:
+            self.remove(id)
+        
         self.save()
 
     def remove(self, id):

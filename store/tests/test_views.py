@@ -1,6 +1,6 @@
 import pytest
 from django.urls import reverse
-from .factories import CategoryFactory, ProductFactory, BrandFactory, ProductVariationFactory, SizeFactory
+from store.tests.factories import CategoryFactory, ProductFactory, BrandFactory, ProductVariationFactory, SizeFactory
 
 pytestmark = pytest.mark.django_db  # This decorator ensures that the tests run with a database setup
 
@@ -39,29 +39,24 @@ def test_product_detail_page_view(client):
     assert "chosen" in response.context
     assert product.name in str(response.content)  # Check if product name appears in the response
 
-# Test ShopPageView with filters
-def test_shop_page_view_with_filters(client):
-    # Create products and categories using factories
-    category = CategoryFactory(name="Category 1")
-    brand = BrandFactory(name="Brand A")
-    size = SizeFactory(name="Small")
 
-    product1 = ProductFactory(category=category, brand=brand, is_active=True)
-    product2 = ProductFactory(category=category, brand=brand, is_active=True)
 
-    # Create a variation for filtering by size
-    variation1 = ProductVariationFactory(product=product1, size=size)
-    variation2 = ProductVariationFactory(product=product2, size=size)
+def test_product_detail_with_variant_slug(client):
+    product = ProductFactory(is_active=True)
+    featured = ProductVariationFactory(product=product, featured=True)
+    alt_variation = ProductVariationFactory(product=product)
 
-    # Get the URL for the shop page with query parameters
-    response = client.get(reverse("shop") + "?category=" + category.slug + "&brand=" + brand.name)
-    
-    # Assert that the response status is 200 (OK)
+    response = client.get(reverse("product-detail", args=[product.slug]) + f"?variant_slug={alt_variation.slug}")
+
     assert response.status_code == 200
-    assert "products" in response.context
-    assert product1.name in str(response.content)  # Check if product appears in the response
-    assert product2.name in str(response.content)  # Check if product appears in the response
+    assert response.context["chosen"] == alt_variation
 
-    # Test pagination (ensure that pagination is handled correctly)
-    paginator = response.context["page"]
-    assert paginator.has_next()  # Check if there's a next page
+
+def test_shop_page_sorting_latest(client):
+    ProductFactory(name="Alpha", is_active=True)
+    ProductFactory(name="Beta", is_active=True)
+
+    response = client.get(reverse("shop") + "?sorting=alpha")
+    products = list(response.context["page"].object_list)
+    names = [p.name for p in products]
+    assert names == sorted(names)

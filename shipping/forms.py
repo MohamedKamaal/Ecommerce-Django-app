@@ -21,7 +21,7 @@ class ShippingInfoForm(forms.ModelForm):
 
     city = forms.ModelChoiceField(
         queryset=City.objects.all(),
-        required=True,
+        required=False,
         widget=forms.Select(attrs={
             'class': 'form-control w-full px-3 mt-2 py-2 border focus:border-transparent '
                      'rounded-full focus:outline-none focus:ring-2 focus:ring-primary'

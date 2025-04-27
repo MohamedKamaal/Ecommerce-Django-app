@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.twitter',
-    # 'django_countries',
+    'django_countries',
     'phonenumber_field',
     'cities_light',
     'users',
@@ -40,12 +40,12 @@ INSTALLED_APPS = [
     'cloudinary',
     'colorfield',  
     'django_extensions',
-    # 'store',
-    # 'cart',
-    # 'shipping',
-    # 'orders',
-    # 'payments',
-    # 'reviews',
+    'store',
+    'cart',
+    'shipping',
+    'orders',
+    'payments',
+    'reviews',
 
 ]
 CITIES_LIGHT_TRANSLATION_LANGUAGES = ['en']  # English only

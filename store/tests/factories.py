@@ -1,6 +1,6 @@
 import factory
 from django.utils.text import slugify
-from .models import Brand, Category, Product, ProductVariation, Size
+from store.models import Brand, Category, Product, ProductVariation, Size
 from taggit.models import Tag
 
 # Factory for Size
@@ -23,7 +23,7 @@ class CategoryFactory(factory.django.DjangoModelFactory):
         model = Category
 
     name = factory.Faker('word')
-    parent = factory.SubFactory('myapp.factories.CategoryFactory', name=None)  # Recursive parent for subcategory
+    
     description = factory.Faker('paragraph')
     slug = factory.LazyAttribute(lambda o: slugify(o.name))
     image = None  # Can use CloudinaryField if you want to simulate file upload

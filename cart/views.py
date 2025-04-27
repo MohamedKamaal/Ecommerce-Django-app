@@ -4,7 +4,7 @@ from cart.cart import Cart
 from django.views.generic import TemplateView, View
 from store.forms import QuantityForm
 from django.core.exceptions import ValidationError
-
+from django.http import Http404
 class CartPageView(TemplateView):
     """
     Renders the cart page displaying the contents of the cart.
@@ -18,24 +18,12 @@ class CartAddView(View):
     If the product variation exists in the cart, it updates the quantity.
     """
     def get(self, request, slug):
-        """
-        Adds a ProductVariation to the cart based on the provided slug.
-        
-        Args:
-            request (HttpRequest): The HTTP request containing the quantity.
-            slug (str): The slug of the product variation to be added.
-        
-        Returns:
-            HttpResponse: Redirects to the cart page.
-        """
         variation = get_object_or_404(ProductVariation, slug=slug)
         cart = Cart(request)
-        quantity = 1  # Default quantity is 1
+        quantity = 1  # Default quantity
         form = QuantityForm(request.GET)
         if form.is_valid():
-            quantity = form.cleaned_data.get("quantity")
-            if quantity > variation.stock:
-                raise ValidationError("This exceeds our stock")
+            quantity = form.cleaned_data.get("quantity", 1)
         cart.add(variation.id, quantity=quantity, update_quantity=True)
         return redirect('cart')
 
@@ -78,13 +66,20 @@ class CartUpdateView(View):
         """
         cart = Cart(request)
         variation = get_object_or_404(ProductVariation, id=id)
+
+        # Check if the item exists in the cart
+        if str(id) not in cart.cart:
+            raise Http404("Product variation not found in cart")
         quantity = int(cart.cart[str(id)]['quantity'])
 
         if action == "increment":
             if quantity + 1 > variation.stock:
                 raise ValidationError("This exceeds our stock")
             cart.add(id, quantity=1)
-        else:
+        elif action == "decrement":
             cart.add(id, quantity=-1)
+        
+        else:
+            raise Http404
 
         return redirect('cart')

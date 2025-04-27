@@ -179,16 +179,6 @@ class ProductVariation(TimeStampedModel):
             self.is_active = True
         super().save(*args, **kwargs)
     
-    def get_absolute_url(self):
-        """
-        Generate the absolute URL for the product variation.
-
-        Adds a query parameter for the variant slug.
-        """
-        url = reverse('product-detail', kwargs={'slug': self.product.slug})
-        query_params = {'variant_slug': self.slug}
-        query_string = urlencode(query_params)
-        return f"{url}?{query_string}"
     
     @property
     def price_after(self):
@@ -224,10 +214,13 @@ class ProductVariation(TimeStampedModel):
     def image(self):
         """
         Return the image URL for the product variation. If no image exists, fallback to the product's base image.
+        If no base image exists, return None or a default image URL.
         """
-        if not self.variation_image:
+        if self.variation_image:
+            return self.variation_image.url
+        if self.product.base_image:
             return self.product.base_image.url
-        return self.variation_image.url
+        return None  # Or a default image URL, e.g., '/static/default.jpg'
     
     @property
     def price(self):

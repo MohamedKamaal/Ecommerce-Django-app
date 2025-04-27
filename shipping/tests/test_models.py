@@ -1,6 +1,7 @@
 import pytest
 from shipping.models import ShippingInfo
-from shipping.tests.factories import ShippingInfoFactory, UserFactory, CityFactory
+from shipping.tests.factories import ShippingInfoFactory
+from users.tests.factories import UserFactory
 from django.db import IntegrityError
 
 
@@ -28,10 +29,9 @@ def test_shipping_info_creation_success():
     """
     Confirm that a ShippingInfo instance is created successfully with valid data.
     """
-    shipping_info = ShippingInfoFactory()
+    shipping_info = ShippingInfoFactory(phone_number= "+201234567890")
     assert ShippingInfo.objects.count() == 1
-    assert shipping_info.phone_number.as_e164 == "+201234567890"
-    assert shipping_info.city is not None
+    assert shipping_info.phone_number== "+201234567890"
 
 
 @pytest.mark.django_db

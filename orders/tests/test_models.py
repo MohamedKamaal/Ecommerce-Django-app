@@ -1,6 +1,6 @@
 import pytest
-from .factories import OrderFactory, OrderItemFactory, UserFactory, ProductVariationFactory
-from .models import Order, OrderItem
+from orders.tests.factories import OrderFactory, OrderItemFactory, UserFactory, ProductVariationFactory
+from orders.models import Order, OrderItem
 
 @pytest.mark.django_db
 def test_order_creation():
