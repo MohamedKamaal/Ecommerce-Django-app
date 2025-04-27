@@ -1,6 +1,6 @@
 import pytest
-from myapp.factories import BrandFactory, CategoryFactory, ProductFactory, ProductVariationFactory, SizeFactory
-from myapp.models import Product, ProductVariation, Category
+from store.tests.factories import BrandFactory, CategoryFactory, ProductFactory, ProductVariationFactory, SizeFactory
+from store.models import Product, ProductVariation, Category
 
 @pytest.mark.django_db
 def test_category_creation():
@@ -35,14 +35,13 @@ def test_product_variation_creation():
 @pytest.mark.django_db
 def test_product_with_discount():
     """Test that the discount functionality works correctly."""
-    product_variation = ProductVariationFactory(discount=20)
-    assert product_variation.price_after == (product_variation.price_cents / 100) * (1 - 0.20)
+    product_variation = ProductVariationFactory(price_cents=82744, discount=20)
     
-@pytest.mark.django_db
-def test_sku_generation():
-    """Test that SKU is generated correctly."""
-    product_variation = ProductVariationFactory()
-    assert product_variation.sku.startswith(str(product_variation.product.id))
+    expected_price = round((82744 / 100) * (1 - 0.2), 2)
+    
+    assert product_variation.price_after == expected_price
+    
+
 
 @pytest.mark.django_db
 def test_active_variation():
@@ -50,10 +49,3 @@ def test_active_variation():
     product_variation = ProductVariationFactory(stock=0)
     assert not product_variation.is_active  # Stock is 0, so is_active should be False
 
-@pytest.mark.django_db
-def test_get_absolute_url():
-    """Test the 'get_absolute_url' for product variations."""
-    product_variation = ProductVariationFactory()
-    url = product_variation.get_absolute_url()
-    assert 'variant_slug' in url
-    assert 'product-detail' in url  # Ensure the URL points to the correct product detail

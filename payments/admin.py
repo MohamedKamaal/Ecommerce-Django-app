@@ -18,10 +18,10 @@ class PaymentAdmin(admin.ModelAdmin):
         list_filter (tuple): The fields by which the list can be filtered.
         readonly_fields (tuple): The fields that cannot be edited in the admin.
     """
-    list_display = ('order', 'total_cents', 'created', 'modified')
+    list_display = ('order', 'total_cents', 'created', 'updated')
     search_fields = ('order__id', 'total_cents')
-    list_filter = ('created', 'modified')
-    readonly_fields = ('created', 'modified')
+    list_filter = ('created', 'updated')
+    readonly_fields = ('created', 'updated')
 
     
     

@@ -75,7 +75,15 @@ class Order(TimeStampedModel):
             str: A string representation of the order in the format 'Order #<id> - <status>'.
         """
         return f"Order #{self.id} - {self.get_status_display()}"
-
+    
+    def save(self, *args, **kwargs):
+        if self.is_paid : 
+            items = self.items.all()
+            for item in items:
+                item.product.stock -= item.quantity 
+                item.save()
+        super().save(*args, **kwargs)
+        
 class OrderItem(models.Model):
     """
     Represents an item in an order.

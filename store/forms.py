@@ -9,4 +9,6 @@ class QuantityForm(forms.Form):
     Attributes:
         quantity (IntegerField): The quantity of the product. It must be between 1 and 10.
     """
-    quantity = forms.IntegerField(max_value=10, min_value=1)
+    quantity = forms.IntegerField(max_value=15, min_value=1)
+
+    

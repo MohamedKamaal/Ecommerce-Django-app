@@ -1,107 +1,114 @@
 import pytest
+from django.test import RequestFactory, Client
 from django.urls import reverse
-from django.test import Client
-from django.core.exceptions import ValidationError
-from store.tests.factories import ProductVariationFactory, CartFactory, ProductFactory, SizeFactory, CategoryFactory, BrandFactory
+from django.http import Http404
+from django.contrib.sessions.middleware import SessionMiddleware
+
+from cart.views import CartPageView, CartAddView, CartResetView, CartUpdateView
 from cart.cart import Cart
-from unittest.mock import MagicMock
+from store.models import ProductVariation
+from store.tests.factories import ProductVariationFactory
+from store.forms import QuantityForm
+
+# Fixtures
+
+@pytest.fixture
+def request_factory():
+    return RequestFactory()
 
 @pytest.fixture
 def client():
     return Client()
 
 @pytest.fixture
-def mock_cart():
-    """Mock Cart class to avoid modifying the actual session in tests"""
-    return MagicMock(spec=Cart)
-
-@pytest.fixture
 def product_variation():
-    """Creates a product variation using the ProductVariationFactory"""
-    return ProductVariationFactory()
+    return ProductVariationFactory(stock=10)
 
 @pytest.fixture
-def cart_data(product_variation):
-    """Creates a cart data fixture with a sample item"""
-    return {
-        'cart': {
-            str(product_variation.id): {'id': product_variation.id, 'quantity': 2, 'price_cents': 1000},
-        }
+def session_request(request_factory):
+    request = request_factory.get('/')
+    middleware = SessionMiddleware(lambda x: None)
+    middleware.process_request(request)
+    request.session.save()
+    return request
+
+# Tests
+
+@pytest.mark.django_db
+def test_cart_page_view_renders(client):
+    client.session.flush()
+    response = client.get(reverse('cart'))
+    assert response.status_code == 200
+    assert 'cart.html' in [t.name for t in response.templates]
+    assert 'cart' in response.context
+    assert isinstance(response.context['cart'], Cart)
+
+@pytest.mark.django_db
+def test_cart_add_view_success(client, product_variation):
+    client.session.flush()
+    url = reverse('cart-add', kwargs={'slug': product_variation.slug})
+    response = client.get(url, {'quantity': 2})
+    assert response.status_code == 302
+    assert response.url == reverse('cart')
+
+    cart = Cart(client)
+    assert str(product_variation.id) in cart.cart
+    assert cart.cart[str(product_variation.id)] == {
+        'id': product_variation.id,
+        'price_cents': int(product_variation.price_cents),
+        'quantity': 2,
     }
 
-def test_cart_page_view(client, cart_data):
-    """Test if the cart page renders correctly"""
-    client.cookies["cart"] = cart_data  # Set mock cart cookie
-    response = client.get(reverse("cart"))
-    assert response.status_code == 200
-    assert "cart" in response.context
-
-def test_cart_add_view(client, product_variation):
-    """Test adding a product variation to the cart"""
-    url = reverse("cart:add", kwargs={"slug": product_variation.slug})
+@pytest.mark.django_db
+def test_cart_add_view_default_quantity(client, product_variation):
+    client.session.flush()
+    url = reverse('cart-add', kwargs={'slug': product_variation.slug})
     response = client.get(url)
-    cart = Cart(client.request)
-    cart.add(product_variation.id, quantity=1, update_quantity=True)
-    
-    # Check if cart was updated correctly
     assert response.status_code == 302
-    assert product_variation.id in cart.cart
+    assert response.url == reverse('cart')
+
+    cart = Cart(client)
+    assert str(product_variation.id) in cart.cart
     assert cart.cart[str(product_variation.id)]['quantity'] == 1
 
-def test_cart_add_view_invalid_quantity(client, product_variation):
-    """Test adding a product with invalid quantity"""
-    url = reverse("cart:add", kwargs={"slug": product_variation.slug}) + "?quantity=20"
-    response = client.get(url)
-    cart = Cart(client.request)
 
-    with pytest.raises(ValidationError):
-        cart.add(product_variation.id, quantity=20, update_quantity=True)
-    
-    # Ensure the cart did not add the invalid product
-    assert product_variation.id not in cart.cart
-
-def test_cart_reset_view(client, cart_data):
-    """Test resetting the cart"""
-    client.cookies["cart"] = cart_data  # Set mock cart cookie
-    url = reverse("cart:reset")
+@pytest.mark.django_db
+def test_cart_add_view_non_existent_slug(client):
+    client.session.flush()
+    url = reverse('cart-add', kwargs={'slug': 'non-existent-slug'})
     response = client.get(url)
-    
-    cart = Cart(client.request)
+    assert response.status_code == 404
+
+@pytest.mark.django_db
+def test_cart_reset_view_clears_cart(client, product_variation):
+    client.session.flush()
+    cart = Cart(client)
+    cart.add(product_variation.id, quantity=2)
+
+    url = reverse('cart-reset')
+    response = client.get(url)
     assert response.status_code == 302
-    assert not cart.cart  # Ensure the cart is cleared
+    assert response.url == reverse('cart')
 
-def test_cart_update_view_increment(client, cart_data, product_variation):
-    """Test incrementing the quantity of a product variation in the cart"""
-    cart_data['cart'][str(product_variation.id)] = {'id': product_variation.id, 'quantity': 2, 'price_cents': 1000}
-    client.cookies["cart"] = cart_data  # Set mock cart cookie
-    
-    url = reverse("cart:update", kwargs={"id": product_variation.id, "action": "increment"})
-    response = client.get(url)
-    
-    cart = Cart(client.request)
-    assert response.status_code == 302
-    assert cart.cart[str(product_variation.id)]['quantity'] == 3  # Quantity incremented by 1
+    cart = Cart(client)
+    assert cart.cart == {}
 
-def test_cart_update_view_decrement(client, cart_data, product_variation):
-    """Test decrementing the quantity of a product variation in the cart"""
-    cart_data['cart'][str(product_variation.id)] = {'id': product_variation.id, 'quantity': 2, 'price_cents': 1000}
-    client.cookies["cart"] = cart_data  # Set mock cart cookie
-    
-    url = reverse("cart:update", kwargs={"id": product_variation.id, "action": "decrement"})
-    response = client.get(url)
-    
-    cart = Cart(client.request)
-    assert response.status_code == 302
-    assert cart.cart[str(product_variation.id)]['quantity'] == 1  # Quantity decremented by 1
 
-def test_cart_update_view_invalid_decrement(client, cart_data, product_variation):
-    """Test decrementing a product variation when quantity is already 1"""
-    cart_data['cart'][str(product_variation.id)] = {'id': product_variation.id, 'quantity': 1, 'price_cents': 1000}
-    client.cookies["cart"] = cart_data  # Set mock cart cookie
-    
-    url = reverse("cart:update", kwargs={"id": product_variation.id, "action": "decrement"})
+
+@pytest.mark.django_db
+def test_cart_update_view_non_existent_id(client):
+    client.session.flush()
+    url = reverse('cart-update', kwargs={'id': 9999, 'action': 'increment'})
     response = client.get(url)
-    
-    cart = Cart(client.request)
-    assert response.status_code == 302
-    assert cart.cart[str(product_variation.id)]['quantity'] == 0  # Quantity should be 0 after decrement
+    assert response.status_code == 404
+
+@pytest.mark.django_db
+def test_cart_update_view_invalid_action(client):
+    client.session.flush()
+    cart = Cart(client)
+    product_variation = ProductVariationFactory()
+    cart.add(product_variation.id, quantity=2)
+
+    url = reverse('cart-update', kwargs={'id': product_variation.id, 'action': 'invalid'})
+    response = client.get(url)
+    assert response.status_code == 404

@@ -1,6 +1,6 @@
 import pytest
 from shipping.forms import ShippingInfoForm
-from shipping.tests.factories import UserFactory, CityFactory
+from users.tests.factories import UserFactory
 from phonenumber_field.phonenumber import PhoneNumber
 
 
@@ -10,13 +10,11 @@ def test_form_valid_data():
     Ensure the form is valid with correct data and cleaned properly.
     """
     user = UserFactory()
-    city = CityFactory()
     
     form_data = {
         "first_name": "Ahmed",
         "last_name": "Youssef",
         "email": "ahmed@example.com",
-        "city": city.pk,
         "address": "123 Nile Street",
         "postal_code": "12345",
         "phone_number": "+201234567890"
@@ -34,7 +32,7 @@ def test_form_missing_required_fields():
     """
     form = ShippingInfoForm(data={})
     assert not form.is_valid()
-    required_fields = ["first_name", "last_name", "email", "city", "address", "postal_code", "phone_number"]
+    required_fields = ["first_name", "last_name", "email","address", "postal_code", "phone_number"]
     for field in required_fields:
         assert field in form.errors
 
@@ -44,12 +42,10 @@ def test_invalid_email_and_phone():
     """
     Form should raise validation errors on invalid email and phone number.
     """
-    city = CityFactory()
     form_data = {
         "first_name": "Ali",
         "last_name": "Gamal",
         "email": "not-an-email",
-        "city": city.pk,
         "address": "456 River Rd",
         "postal_code": "0000",
         "phone_number": "invalid-phone"
