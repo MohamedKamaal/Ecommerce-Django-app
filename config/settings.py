@@ -10,12 +10,12 @@ from decouple import config
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--pe&_g^9hr35t74(080rt%)xejmeo4&tnfwvad6xt%4g_+b01$'
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["56.228.60.131","localhost"]
 
 
 # Application definition
@@ -94,8 +94,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),  # Fetch database name from .env file
+        'USER': config('DB_USER'),  # Fetch database user from .env file
+        'PASSWORD': config('DB_PASSWORD'),  # Fetch password from .env file
+        'HOST': 'localhost',  # Use 'localhost' if running on the same machine, or provide the IP address of the server
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
 
