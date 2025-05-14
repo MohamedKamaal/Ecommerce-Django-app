@@ -13,9 +13,9 @@ import os
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG",default=True)
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["56.228.60.131","localhost"]
 
 
 # Application definition
@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'orders',
     'payments',
     'reviews',
-    'storages',
 
 ]
 CITIES_LIGHT_TRANSLATION_LANGUAGES = ['en']  # English only
@@ -99,11 +98,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+        'NAME': config('DB_NAME'),  # Fetch database name from .env file
+        'USER': config('DB_USER'),  # Fetch database user from .env file
+        'PASSWORD': config('DB_PASSWORD'),  # Fetch password from .env file
+        'HOST': 'localhost',  # Use 'localhost' if running on the same machine, or provide the IP address of the server
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
 
